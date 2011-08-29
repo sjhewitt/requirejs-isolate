@@ -57,7 +57,7 @@ define([],function(){
     return mock;
   }
 
-  var IsolationContext = function(baseConfig, bootstrapConfig){
+  var IsolationContext = function(baseConfig){
     var config = {
       dependenciesToPassthru: {},
       mappedInstances: {},
@@ -91,7 +91,6 @@ define([],function(){
         return contextConfigurator;
       }
     }
-    if(bootstrapConfig) bootstrapConfig(contextConfigurator);
 
     // load provides the method for both requirejs to use isolate as a plugin
     // and users to invoke isolate directly.
@@ -132,11 +131,13 @@ define([],function(){
       })
     }
 
-    // configure provides for nested context configurations. A clean context can be initialized off of
-    // any IsolationContext by calling it's configure method. The method provided is given a contextConfigurator object
-    // by which it can configure the new context.
     this.configure = function(func){
-      return new IsolationContext(config, func);
+      func(contextConfigurator);
+      return this;
+    }
+
+    this.createContext = function(){
+      return new IsolationContext(config);
     }
   }
 
@@ -152,5 +153,5 @@ define([],function(){
     }
   }
 
-  return new IsolationContext(initialConfig, window["configureIsolate"]);
+  return new IsolationContext(initialConfig);
 })

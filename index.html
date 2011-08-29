@@ -18,13 +18,22 @@
 
 
 
+  <script type="text/javascript" src="require.js"></script>
   <script type="text/javascript">
-    function configureIsolate(config){
-      config.map("b", { name: function(){ return "global map"; } })
-            .passthru("c");
-    }
+    // Configuration of requirejs-isolate
+    require(["isolate"], function(isolate){
+      isolate.configure( function(ctx){
+        ctx.map("b", { name: function(){ return "global map"; } })
+           .passthru("c");
+      });
+    });
+
+    // Configuration of requirejs
+    require({ baseUrl: "js" });
+
+    // triggering of main application
+    require(["tests"]);
   </script>
-  <script type="text/javascript" src="require.js" data-main="js/tests.js"></script>
 
 
   

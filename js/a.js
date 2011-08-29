@@ -1,4 +1,4 @@
-define(["b", "c", "d"], function(b,c,d){
+define(["b", "c"], function(b,c){
 
   return {
     whatIsBsName: function(){
@@ -6,9 +6,6 @@ define(["b", "c", "d"], function(b,c,d){
     },
     whatIsCsName: function(){
       return c.name();
-    },
-    whatIsDsName: function(){
-      return d.name();
     }
   }
 })
