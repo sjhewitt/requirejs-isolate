@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript">
+    // This is just a super light testing framework. The console is your test runner.
+    function expect(a,b){
+      var msg = "expected '"+a+"' to equal '"+b+"'";
+      console[ a === b ? "info" : "error"](msg);
+    }
+  </script>
+
+
+
+
+  <script type="text/javascript">
+    function configureIsolate(config){
+      config.map("b", { name: function(){ return "global map"; } })
+            .passthru("c");
+    }
+  </script>
+  <script type="text/javascript" src="require.js" data-main="js/main.js"></script>
+
+
+  
+</head>
+<body>
+
+</body>
+</html>
