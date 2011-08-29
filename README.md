@@ -40,7 +40,7 @@ New contexts can be spawned and separately configured using the _.createContext(
 ```javascript
  define(["isolate"], function(isolate){
    isolate.createContext()
-    //...
+    //... calls to .configure or .load can follow
  });
 ```
 
@@ -59,14 +59,14 @@ Context Configuration: runtime configuration
  });
  ```
 
- **Very Important!** Note here _.configure_ does not return a IsolatedContext instance. Calls to _.configure_ modify the
+ **Very Important!** Note here _.configure_ does not return a new IsolationContext instance. Calls to _.configure_ modify the
  configuration of the context on which it is called. To spawn a new IsolationContext for configuration, use
  _.createContext().configure_ instead.
 
 Chaining Methods
 -----
 
-_.configure(...)_ and _.createContext()_ return the IsolationContext instance, so they can be chained together for easier
+_.configure(...)_ and _.createContext()_ return an IsolationContext instance, so they can be chained together for easier
 reading.
 
 ```javascript
@@ -84,7 +84,7 @@ define(["isolate"], function(isolate){
 Context Configration: API
 -----
 
-Within either configuration option mentioned above, these method are available to you for configuring the context:
+Within either configuration option mentioned above, these methods are available to you for configuring the context:
 
 **passthru()**
 
