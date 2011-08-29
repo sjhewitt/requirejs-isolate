@@ -2,12 +2,18 @@
 <html>
 <head>
   <script type="text/javascript">
-    // This is just a super light testing framework. The console is your test runner.
+    // This is just a super light testing framework.
     function expect(a,b){
-      var msg = "expected '"+a+"' to equal '"+b+"'";
-      console[ a === b ? "info" : "error"](msg);
+      var result = document.createElement("P");
+      result.className = a === b ? "success" : "error";
+      result.innerHTML = "expected '"+a+"' to equal '"+b+"'";
+      document.getElementById("testResults").appendChild(result);
     }
   </script>
+  <style type="text/css">
+    .success { color: green; }
+    .error { color: red; }
+  </style>
 
 
 
@@ -18,12 +24,13 @@
             .passthru("c");
     }
   </script>
-  <script type="text/javascript" src="require.js" data-main="js/main.js"></script>
+  <script type="text/javascript" src="require.js" data-main="js/tests.js"></script>
 
 
   
 </head>
 <body>
-
+  <h1>Test results:</h1>
+  <div id="testResults"></div>
 </body>
 </html>
