@@ -146,7 +146,7 @@ define([],function(){
     mappedInstances:{},
     typeHandlers: {
       "function": function(){ return function(){} },
-      "object": function(orig,config) { var mock = {}; _.each(orig, function(item,key){ mock[key] = mockThis(item,config);}); return mock; },
+      "object": function() { return {} },
       "string": function() { return "" },
       "number": function() { return 0 }
     }
