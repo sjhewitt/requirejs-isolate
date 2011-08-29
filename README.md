@@ -2,7 +2,8 @@ require-isolate
 ===============
 
 require-isolate is a plugin to [requirejs](http://requirejs.org/) that helps simplify testing modules you have defined
-by providing a configurable automocking container around your modules.
+by providing a configurable isolation layer around your modules. The isolation layer can be configured to behave as an
+automocking container.
 
 Usage: as a require.js plugin
 -----
@@ -15,7 +16,7 @@ define(["isolate!myModule", anotherModule], function(myModule, anotherModule){
 
 ```
 
-**myModule** will be an isolated instance of your module. Any dependencies it required have been auto-mocked out.
+**myModule** will be an isolated instance of your module. Any dependencies it required have been replaced by stubs.
 
 **anotherModule** will be a normal, non-isolated instance of your module. If _anotherModule_ itself depends on _myModule_,
 it will get a normal, non-isolated instance of _myModule_ as it's dependency.
@@ -35,26 +36,24 @@ Usage: as a direct api
 
  A manual call to _isolate.load_ has the same effect on the target module instance as using isolate as a require.js plugin.
 
-Context Configuration: initial bootstrapping
+Creating new IsolationContexts
 -----
 
- When the isolate module is first initialized, it looks for a global function called **configureIsolate**. If found, it
- runs this function with the context configuration api described below.
+New contexts can be spawned and separately configured using the _.createContext()_ method.
 
- ```html
- <script type="text/javascript">
- function configureIsolate(ctx){
-   ///configuration here
- }
- </script>
- <script type="text/javascript" src="require.js" data-main="main.js"></script>
- ```
+```javascript
+
+ define(["isolate"], function(isolate){
+   isolate.createContext()
+    //...
+ });
+
+```
 
 Context Configuration: runtime configuration
 -----
 
- Using the direct api, you can spawn specifically configured isolation context configurations. These contexts can live
- side-by-side with separate configurations.
+ Using the direct api, you can configure your isolation context.
 
  ```javascript
 
@@ -67,9 +66,28 @@ Context Configuration: runtime configuration
  });
  ```
 
- **Very Important!** Note here that _.load_ is chained off of the _.configure_ call. This is because _.configure_
- returns a new IsolatedContext instance with the provided configuration and the original context as it's basis.
- It does not modify the original context.
+ **Very Important!** Note here _.configure_ does not return a IsolatedContext instance. Calls to _.configure_ modify the
+ configuration of the context on which it is called. To spawn a new IsolationContext for configuration, use
+ _.createContext().configure_ instead.
+
+Chaining Methods
+-----
+
+_.configure(...)_ and _.createContext()_ return the IsolationContext instance, so they can be chained together for easier
+reading.
+
+ ```javascript
+
+ define(["isolate"], function(isolate){
+   isolate
+     .createContext()
+     .configure( function(ctx){
+        /* configuration here */ })
+     .load("myModule", function(myModule){
+       /* ... */ });
+ });
+ ```
+
 
 Context Configration: API
 -----
