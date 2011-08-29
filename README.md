@@ -20,8 +20,8 @@ define(["isolate!myModule", anotherModule], function(myModule, anotherModule){
 **anotherModule** will be a normal, non-isolated instance of your module. If _anotherModule_ itself depends on _myModule_,
 it will get a normal, non-isolated instance of _myModule_ as it's dependency.
 
- Usage: as a direct api
- -----
+Usage: as a direct api
+-----
 
  ```javascript
 
@@ -35,8 +35,8 @@ it will get a normal, non-isolated instance of _myModule_ as it's dependency.
 
  A manual call to _isolate.load_ has the same effect on the target module instance as using isolate as a require.js plugin.
 
- Context Configuration: initial bootstrapping
- ------------
+Context Configuration: initial bootstrapping
+-----
 
  When the isolate module is first initialized, it looks for a global function called **configureIsolate**. If found, it
  runs this function with the context configuration api described below.
@@ -50,8 +50,8 @@ it will get a normal, non-isolated instance of _myModule_ as it's dependency.
  <script type="text/javascript" src="require.js" data-main="main.js"></script>
  ```
 
- Context Configuration: runtime configuration
- ------------
+Context Configuration: runtime configuration
+-----
 
  Using the direct api, you can spawn specifically configured isolation context configurations. These contexts can live
  side-by-side with separate configurations.
@@ -72,7 +72,7 @@ it will get a normal, non-isolated instance of _myModule_ as it's dependency.
  It does not modify the original context.
 
 Context Configration: API
--------------
+-----
 
 Within either configuration option mentioned above, these method are available to you for configuring the context:
 
