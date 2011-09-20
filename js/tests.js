@@ -1,4 +1,4 @@
-define(["isolate", "a"],function(isolate, a){
+define(["isolate", "a", "b"],function(isolate, a, realB){
   expect(a.whatIsBsName(), "real B");
   expect(a.whatIsCsName(), "real C");
   
@@ -29,5 +29,30 @@ define(["isolate", "a"],function(isolate, a){
       expect(a.whatIsBsName(), "another manual isolation");
       expect(a.whatIsCsName(), "real C");
   })
-  
+
+  isolate.createContext().configure(function(cfg){
+    cfg.map("b", cfg.map.asFactory(function(impl){return { name: function(){ return "fake"}, impl: impl }; }))
+  }).load("a", function(a){
+    expect(a.dependencies.b.name(), "fake")
+    expect(a.dependencies.b.impl, realB)
+  })
+
+  isolate.createContext().configure(function(cfg){
+    cfg.map("b", cfg.map.asInstance( { name: function(){ return "fake"} }))
+  }).load("a", function(a){
+    expect(a.dependencies.b.name(), "fake")
+  })
+
+  isolate.createContext().configure(function(cfg){
+    cfg.map.asFactory("b", function(impl){return { name: function(){ return "fake"}, impl: impl }; })
+  }).load("a", function(a){
+    expect(a.dependencies.b.name(), "fake")
+    expect(a.dependencies.b.impl, realB)
+  })
+
+  isolate.createContext().configure(function(cfg){
+    cfg.map.asInstance("b", { name: function(){ return "fake"} })
+  }).load("a", function(a){
+    expect(a.dependencies.b.name(), "fake")
+  })
 })

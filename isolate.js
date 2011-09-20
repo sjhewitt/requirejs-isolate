@@ -40,16 +40,25 @@ define([],function(){
     if(moduleName in config.dependenciesToPassthru) return orig;
     var mappedInstance;
     if(moduleName in config.mappedInstances) {
-      return config.mappedInstances[moduleName];
+      return instanceOrFactory(config.mappedInstances[moduleName], orig, config);
     }
     else {
       for(var regex in config.mappedInstances){
         if( moduleName.match(new RegExp(regex))){
-          return config.mappedInstances[regex];
+          return instanceOrFactory(config.mappedInstances, orig, config);
         }
       }
     }
     return mockThis(orig,config);
+  }
+
+  // For a given match when looking through the mapping context configuration
+  // extract the intended instance to inject
+  var instanceOrFactory = function(match, orig, config){
+    if(match instanceof IsolationFactory){
+      return match.getInstance(orig, config)
+    }
+    return match;
   }
 
   // mockThis consumes an implementation and an IsolationContext configuration
@@ -65,6 +74,12 @@ define([],function(){
       _.each(orig, function(item,i){ mock[i] = mockThis(item,config); });
     }
     return mock;
+  }
+
+  var IsolationFactory = function(factory){
+    this.getInstance = function(impl){
+      return factory(impl);
+    }
   }
 
   var IsolationContext = function(baseConfig){
@@ -107,6 +122,17 @@ define([],function(){
         config.typeHandlers[type.toLowerCase()] = factory;
         return contextConfigurator;
       }
+    }
+
+    contextConfigurator.map.asFactory = function(){
+      if(typeof(arguments[0]) === "function")
+        return new IsolationFactory(arguments[0]);
+      contextConfigurator.map(arguments[0], new IsolationFactory(arguments[1]))
+    }
+    contextConfigurator.map.asInstance = function(instance){
+      if(arguments.length == 1)
+        return instance;
+      contextConfigurator.map(arguments[0], arguments[1])
     }
 
     // load provides the method for both requirejs to use isolate as a plugin
