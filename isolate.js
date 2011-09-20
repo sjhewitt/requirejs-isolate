@@ -71,7 +71,8 @@ define([],function(){
     var config = {
       dependenciesToPassthru: {},
       mappedInstances: {},
-      typeHandlers: {}
+      typeHandlers: {},
+      dependenciesKey: "dependencies"
     };
 
     // copy over configuration entries from the baseConfig object
@@ -127,7 +128,7 @@ define([],function(){
 
         for(var modName in mainCtx.defined){
           if(modName == name) continue;
-          
+
           isolatedCtx.defined[modName] = mockModule(modName, mainCtx.defined[modName], config);
           isolatedCtx.loaded[modName] = true;
         }
@@ -135,6 +136,9 @@ define([],function(){
         delete isolatedCtx.loaded[name];
 
         isolatedRequire([name], function(isolatedModule){
+          if( config.dependenciesKey ) {
+            isolatedModule[config.dependenciesKey] = isolatedCtx.defined;
+          }
           load(isolatedModule);
         })
 
