@@ -37,8 +37,18 @@ define([],function(){
   // and an isolationContext configuration and returns the proper
   // implementation for the context.
   var mockModule = function(moduleName, orig, config){
-    if(moduleName in config.mappedInstances ) return config.mappedInstances[moduleName];
     if(moduleName in config.dependenciesToPassthru) return orig;
+    var mappedInstance;
+    if(moduleName in config.mappedInstances) {
+      return config.mappedInstances[moduleName];
+    }
+    else {
+      for(var regex in config.mappedInstances){
+        if( moduleName.match(new RegExp(regex))){
+          return config.mappedInstances[regex];
+        }
+      }
+    }
     return mockThis(orig,config);
   }
 
