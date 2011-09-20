@@ -161,12 +161,20 @@ define([],function(){
     }
   }
 
+  var wrapperFunc = function(){
+    var injected;
+    var simulatedFunction = function(){
+      if( injected ) return injected.apply(this,arguments) || this;
+    }
+    simulatedFunction.doThis = function(func){ injected = func; }
+    return simulatedFunction;
+  }
   // Initial baseline configuration
   var initialConfig = {
     dependenciesToPassthru: {"isolate": 1},
     mappedInstances:{},
     typeHandlers: {
-      "function": function(){ return function(){} },
+      "function": function(){ return new wrapperFunc() },
       "object": function() { return {} },
       "string": function() { return "" },
       "number": function() { return 0 }
