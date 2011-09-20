@@ -92,7 +92,13 @@ define([],function(){
 
       // map a specific module name to a specific implementation
       map: function(moduleName, impl){
-        config.mappedInstances[moduleName] = impl;
+        if("object" === typeof(moduleName)){
+          _.each(moduleName, function(impl, moduleName){
+            contextConfigurator.map(moduleName, impl);
+          })
+        } else {
+          config.mappedInstances[moduleName] = impl;
+        }
         return contextConfigurator;
       },
 
