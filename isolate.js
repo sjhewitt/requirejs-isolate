@@ -45,7 +45,7 @@ define([],function(){
     else {
       for(var regex in config.mappedInstances){
         if( moduleName.match(new RegExp(regex))){
-          return instanceOrFactory(config.mappedInstances, orig, config);
+          return instanceOrFactory(config.mappedInstances[regex], orig, config);
         }
       }
     }
@@ -127,12 +127,14 @@ define([],function(){
     contextConfigurator.map.asFactory = function(){
       if(typeof(arguments[0]) === "function")
         return new IsolationFactory(arguments[0]);
-      contextConfigurator.map(arguments[0], new IsolationFactory(arguments[1]))
-    }
-    contextConfigurator.map.asInstance = function(instance){
-      if(arguments.length == 1)
-        return instance;
-      contextConfigurator.map(arguments[0], arguments[1])
+      if("object" === typeof(arguments[0])){
+        _.each(arguments[0], function(factory, moduleName){
+          contextConfigurator.map(moduleName, new IsolationFactory(factory));
+        })
+      } else {
+        contextConfigurator.map(arguments[0], new IsolationFactory(arguments[1]));
+      }
+      return contextConfigurator;
     }
 
     // load provides the method for both requirejs to use isolate as a plugin
