@@ -49,7 +49,9 @@ define([],function(){
         }
       }
     }
-    return mockThis(orig,config);
+    // if we're mocking all modules, then return a mock object otherwise return
+    // the original module
+    return config.mockAll ? mockThis(orig,config) : orig;
   }
 
   // For a given match when looking through the mapping context configuration
@@ -84,6 +86,7 @@ define([],function(){
 
   var IsolationContext = function(baseConfig){
     var config = {
+      mockAll: false,
       dependenciesToPassthru: {},
       mappedInstances: {},
       typeHandlers: {},
